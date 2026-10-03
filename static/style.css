@@ -1,0 +1,777 @@
+:root {
+  --ink: #1d2433;
+  --paper: #f6f8fc;
+  --line: #dbe3f0;
+  --mark: #ffe45c;
+  --blue: #2750d8;
+  --ok: #1f8a4c;
+  --bad: #c23a3a;
+  --card: #ffffff;
+}
+
+/* ================================
+   DARK MODE
+   ================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8ecf5;
+    --paper: #141a2a;
+    --line: #2a3550;
+    --card: #1b2338;
+    --blue: #8fa9ff;
+  }
+}
+
+/* ================================
+   BASIC RESET
+   ================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+/* ================================
+   MAIN BODY
+   ================================ */
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  font: 17px/1.6 "Atkinson Hyperlegible", system-ui, sans-serif;
+  color: var(--ink);
+
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px);
+
+  background-size: 100% 32px;
+
+  position: relative;
+
+  transition:
+    background 0.5s ease,
+    color 0.3s ease;
+}
+
+/* ================================
+   MAIN CONTAINER
+   ================================ */
+
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 32px 16px 64px;
+}
+
+/* ================================
+   HEADINGS
+   ================================ */
+
+h1,
+h2 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+h1 {
+  font-size: clamp(2.4rem, 9vw, 3.6rem);
+  line-height: 1;
+
+  background:
+    linear-gradient(
+      transparent 62%,
+      var(--mark) 62%
+    );
+
+  display: inline-block;
+  color: #1d2433;
+}
+
+header p {
+  max-width: 52ch;
+  margin: 14px 0 24px;
+}
+
+/* ================================
+   PANELS
+   ================================ */
+
+.panel {
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+
+  padding: 18px;
+  margin-bottom: 16px;
+
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+/* ================================
+   IMAGE DROP AREA
+   ================================ */
+
+.drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+  min-height: 120px;
+
+  border: 2px dashed var(--blue);
+  border-radius: 8px;
+
+  cursor: pointer;
+  padding: 12px;
+
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.drop img {
+  max-width: 100%;
+  max-height: 260px;
+  border-radius: 6px;
+}
+
+/* ================================
+   TEXTAREA + SELECT
+   ================================ */
+
+textarea,
+select {
+  width: 100%;
+
+  font: inherit;
+  color: inherit;
+
+  background: var(--paper);
+
+  border: 2px solid var(--line);
+  border-radius: 8px;
+
+  padding: 10px;
+}
+
+textarea {
+  margin-bottom: 12px;
+  resize: vertical;
+}
+
+/* ================================
+   ROW
+   ================================ */
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.row select {
+  flex: 1;
+  min-width: 120px;
+  width: auto;
+}
+
+/* ================================
+   BUTTONS
+   ================================ */
+
+button {
+  font: 700 1rem "Atkinson Hyperlegible", sans-serif;
+
+  cursor: pointer;
+
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+
+  padding: 10px 16px;
+
+  background: var(--mark);
+  color: #1d2433;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--ink);
+}
+
+/* ================================
+   FOCUS
+   ================================ */
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ================================
+   ERROR
+   ================================ */
+
+#error {
+  color: var(--bad);
+  font-weight: 700;
+  margin: 10px 0 0;
+}
+
+/* ================================
+   TABS
+   ================================ */
+
+.tabs {
+  display: flex;
+  gap: 6px;
+
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.tabs button {
+  background: var(--card);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.tabs button.on {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ================================
+   HINT
+   ================================ */
+
+.hint {
+  background: color-mix(
+    in srgb,
+    var(--mark) 35%,
+    transparent
+  );
+
+  border-left: 5px solid var(--mark);
+
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+/* ================================
+   SOLUTION
+   ================================ */
+
+.solution {
+  border-left: 5px solid var(--blue);
+
+  padding-left: 12px;
+  margin-top: 16px;
+}
+
+/* ================================
+   QUIZ
+   ================================ */
+
+.q {
+  margin-bottom: 20px;
+}
+
+.opt {
+  display: block;
+
+  width: 100%;
+  text-align: left;
+
+  background: var(--paper);
+  color: var(--ink);
+
+  margin: 6px 0;
+}
+
+.opt.right {
+  background: var(--ok);
+  color: #fff;
+}
+
+.opt.wrong {
+  background: var(--bad);
+  color: #fff;
+}
+
+.why {
+  font-size: 0.95rem;
+}
+
+/* ================================
+   FLASHCARDS
+   ================================ */
+
+.grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(200px, 1fr)
+    );
+
+  gap: 12px;
+}
+
+.card {
+  min-height: 120px;
+
+  background: var(--paper);
+  color: var(--ink);
+
+  font-weight: 400;
+}
+
+.card.flip {
+  background: var(--blue);
+  color: #fff;
+}
+
+/* ================================
+   LIST
+   ================================ */
+
+ol {
+  padding-left: 22px;
+}
+
+/* =========================================================
+   STUDYLENS SUBJECT THEMES
+   ========================================================= */
+
+/* Decorative academic background */
+
+body::before {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  z-index: -1;
+  pointer-events: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: clamp(2rem, 6vw, 6rem);
+  font-weight: 800;
+
+  letter-spacing: 10px;
+  line-height: 2;
+
+  text-align: center;
+
+  opacity: 0.055;
+
+  transform: rotate(-8deg);
+
+  white-space: pre-wrap;
+
+  transition: all 0.5s ease;
+}
+
+/* =========================================================
+   GENERAL
+   ========================================================= */
+
+body.theme-general {
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(120, 150, 255, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(100, 200, 180, 0.15),
+      transparent 30%
+    ),
+    #f5f7fb;
+}
+
+body.theme-general::before {
+  content: "LEARN   THINK   PRACTICE   REPEAT";
+}
+
+/* =========================================================
+   MATHEMATICS
+   ========================================================= */
+
+body.theme-math {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(80, 130, 255, 0.16),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(150, 100, 255, 0.12),
+      transparent 30%
+    ),
+    #f4f6ff;
+}
+
+body.theme-math::before {
+  content: "π   ∑   √   x²   ∫   Δ";
+}
+
+/* =========================================================
+   PHYSICS
+   ========================================================= */
+
+body.theme-physics {
+  background:
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(60, 120, 255, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(100, 180, 255, 0.14),
+      transparent 30%
+    ),
+    #f2f7ff;
+}
+
+body.theme-physics::before {
+  content: "F = ma   E = mc²   λ   Δ   v";
+}
+
+/* =========================================================
+   CHEMISTRY
+   ========================================================= */
+
+body.theme-chemistry {
+  background:
+    radial-gradient(
+      circle at 15% 25%,
+      rgba(80, 190, 150, 0.16),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(80, 150, 220, 0.13),
+      transparent 30%
+    ),
+    #f2faf7;
+}
+
+body.theme-chemistry::before {
+  content: "H₂O   CO₂   NaCl   pH   O₂";
+}
+
+/* =========================================================
+   BIOLOGY
+   ========================================================= */
+
+body.theme-biology {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(60, 180, 110, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(100, 200, 140, 0.14),
+      transparent 30%
+    ),
+    #f2faf3;
+}
+
+body.theme-biology::before {
+  content: "DNA   CELL   GENE   LIFE   ECOLOGY";
+}
+
+/* =========================================================
+   COMPUTER SCIENCE
+   ========================================================= */
+
+body.theme-cs {
+  background:
+    radial-gradient(
+      circle at 15% 25%,
+      rgba(80, 100, 230, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(120, 80, 220, 0.14),
+      transparent 30%
+    ),
+    #f4f3fc;
+}
+
+body.theme-cs::before {
+  content: "</>   1010   { }   [ ]   AI   CODE";
+}
+
+/* =========================================================
+   ENGLISH
+   ========================================================= */
+
+body.theme-english {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(220, 150, 80, 0.15),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(180, 120, 80, 0.12),
+      transparent 30%
+    ),
+    #fff9f2;
+}
+
+body.theme-english::before {
+  content: "READ   WRITE   WORDS   STORY   LANGUAGE";
+}
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+
+body.theme-history {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(170, 120, 70, 0.16),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(190, 150, 90, 0.13),
+      transparent 30%
+    ),
+    #faf6ee;
+}
+
+body.theme-history::before {
+  content: "PAST   EMPIRE   CIVILIZATION   TIMELINE";
+}
+
+/* =========================================================
+   GEOGRAPHY
+   ========================================================= */
+
+body.theme-geography {
+  background:
+    radial-gradient(
+      circle at 15% 25%,
+      rgba(50, 170, 180, 0.17),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(70, 150, 220, 0.13),
+      transparent 30%
+    ),
+    #f1fafb;
+}
+
+body.theme-geography::before {
+  content: "MAP   EARTH   CLIMATE   OCEAN   LAND";
+}
+
+/* =========================================================
+   ECONOMICS
+   ========================================================= */
+
+body.theme-economics {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(60, 170, 120, 0.16),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(70, 150, 200, 0.12),
+      transparent 30%
+    ),
+    #f3faf6;
+}
+
+body.theme-economics::before {
+  content: "₹   %   GDP   MARKET   DEMAND   SUPPLY";
+}
+
+/* =========================================================
+   POLITICAL SCIENCE
+   ========================================================= */
+
+body.theme-political {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(100, 100, 180, 0.15),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(160, 100, 160, 0.12),
+      transparent 30%
+    ),
+    #f6f4fa;
+}
+
+body.theme-political::before {
+  content: "STATE   RIGHTS   LAW   GOVERNANCE   SOCIETY";
+}
+
+/* =========================================================
+   ACCOUNTANCY
+   ========================================================= */
+
+body.theme-accountancy {
+  background:
+    radial-gradient(
+      circle at 15% 25%,
+      rgba(40, 160, 130, 0.16),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(80, 130, 190, 0.12),
+      transparent 30%
+    ),
+    #f2faf8;
+}
+
+body.theme-accountancy::before {
+  content: "₹   DEBIT   CREDIT   ASSETS   BALANCE";
+}
+
+/* =========================================================
+   BUSINESS STUDIES
+   ========================================================= */
+
+body.theme-business {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(80, 120, 210, 0.17),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(100, 170, 200, 0.12),
+      transparent 30%
+    ),
+    #f3f7fb;
+}
+
+body.theme-business::before {
+  content: "BUSINESS   PLAN   MARKET   MANAGEMENT";
+}
+
+/* =========================================================
+   PSYCHOLOGY
+   ========================================================= */
+
+body.theme-psychology {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(170, 100, 180, 0.15),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(120, 120, 210, 0.12),
+      transparent 30%
+    ),
+    #f8f4fa;
+}
+
+body.theme-psychology::before {
+  content: "MIND   MEMORY   BEHAVIOR   THINKING";
+}
+
+/* =========================================================
+   ENVIRONMENTAL SCIENCE
+   ========================================================= */
+
+body.theme-environment {
+  background:
+    radial-gradient(
+      circle at 15% 25%,
+      rgba(60, 170, 100, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(50, 160, 170, 0.13),
+      transparent 30%
+    ),
+    #f1faf4;
+}
+
+body.theme-environment::before {
+  content: "EARTH   WATER   AIR   CLIMATE   ECOLOGY";
+}
+
+/* =========================================================
+   ENGINEERING
+   ========================================================= */
+
+body.theme-engineering {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(90, 120, 170, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(120, 140, 160, 0.13),
+      transparent 30%
+    ),
+    #f3f6f9;
+}
+
+body.theme-engineering::before {
+  content: "DESIGN   BUILD   TEST   SYSTEM   ENGINEER";
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  body::before {
+    font-size: 2rem;
+    letter-spacing: 5px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

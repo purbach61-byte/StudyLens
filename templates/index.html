@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StudyLens: snap it, learn it</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main>
+  <header>
+    <h1>StudyLens</h1>
+    <p>Snap a problem or a page of notes. Get hints first, answers when you ask, then a quiz and flashcards to make it stick.</p>
+  </header>
+
+  <section class="panel" id="input">
+    <label class="drop" id="drop" tabindex="0">
+      <input type="file" id="image" accept="image/*" hidden>
+      <img id="preview" alt="" hidden>
+      <span id="dropText">Tap to add a photo of your problem or notes</span>
+    </label>
+    <textarea id="question" rows="2" placeholder="Optional: what are you stuck on?"></textarea>
+    <div class="row">
+  <select id="subject" aria-label="Subject">
+    <option value="General">📚 General</option>
+    <option value="Mathematics">➗ Mathematics</option>
+    <option value="Physics">⚛️ Physics</option>
+    <option value="Chemistry">🧪 Chemistry</option>
+    <option value="Biology">🧬 Biology</option>
+    <option value="Computer Science">💻 Computer Science</option>
+    <option value="English">📖 English</option>
+    <option value="History">🏛️ History</option>
+    <option value="Geography">🌍 Geography</option>
+    <option value="Economics">📊 Economics</option>
+    <option value="Political Science">🏛️ Political Science</option>
+    <option value="Accountancy">🧾 Accountancy</option>
+    <option value="Business Studies">💼 Business Studies</option>
+    <option value="Psychology">🧠 Psychology</option>
+    <option value="Environmental Science">🌱 Environmental Science</option>
+    <option value="Engineering">⚙️ Engineering</option>
+    <option value="Other">🔎 Other</option>
+  </select>
+
+  <select id="language" aria-label="Language">
+    <option>English</option>
+    <option>Bengali</option>
+    <option>Hindi</option>
+  </select>
+      <select id="level" aria-label="Level">
+        <option>Class 6-8</option><option selected>Class 9-10</option><option>Class 11-12</option><option>College</option>
+      </select>
+      <button id="go">Start learning</button>
+    </div>
+    <p id="error" role="alert" hidden></p>
+  </section>
+
+  <section id="result" hidden>
+    <h2 id="topic"></h2>
+    <nav class="tabs" role="tablist">
+      <button class="on" data-t="hints">Hints</button>
+      <button data-t="explain">Explain</button>
+      <button data-t="quiz">Quiz</button>
+      <button data-t="cards">Flashcards</button>
+      <button data-t="plan">Plan</button>
+    </nav>
+    <div class="panel tab" id="hints"></div>
+    <div class="panel tab" id="explain" hidden></div>
+    <div class="panel tab" id="quiz" hidden></div>
+    <div class="panel tab" id="cards" hidden></div>
+    <div class="panel tab" id="plan" hidden></div>
+    <button class="ghost" id="share">Copy as a study card to share with friends</button>
+  </section>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+let pack = null;
+const subjectThemes = {
+  General: "theme-general",
+  Mathematics: "theme-math",
+  Physics: "theme-physics",
+  Chemistry: "theme-chemistry",
+  Biology: "theme-biology",
+  "Computer Science": "theme-cs",
+  English: "theme-english",
+  History: "theme-history",
+  Geography: "theme-geography",
+  Economics: "theme-economics",
+  "Political Science": "theme-political",
+  Accountancy: "theme-accountancy",
+  "Business Studies": "theme-business",
+  Psychology: "theme-psychology",
+  "Environmental Science": "theme-environment",
+  Engineering: "theme-engineering",
+  Other: "theme-general"
+};
+
+function changeSubjectTheme() {
+  const subject = $("#subject").value;
+
+  document.body.className = subjectThemes[subject] || "theme-general";
+}
+
+$("#subject").addEventListener("change", changeSubjectTheme);
+
+changeSubjectTheme();
+const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+$("#drop").onclick = () => $("#image").click();
+$("#drop").onkeydown = e => { if (e.key === "Enter") $("#image").click(); };
+$("#image").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  $("#preview").src = URL.createObjectURL(f); $("#preview").hidden = false;
+  $("#dropText").textContent = "Change photo";
+};
+
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tabs button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll(".tab").forEach(t => t.hidden = t.id !== b.dataset.t);
+});
+
+$("#go").onclick = async () => {
+  const fd = new FormData();
+  const f = $("#image").files[0]; if (f) fd.append("image", f);
+  fd.append("question", $("#question").value);
+  fd.append("subject", $("#subject").value);
+  fd.append("language", $("#language").value);
+  fd.append("level", $("#level").value);
+  $("#error").hidden = true; $("#go").disabled = true; $("#go").textContent = "Reading...";
+  try {
+    const r = await fetch("/study", { method: "POST", body: fd });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error);
+    pack = d; render(d);
+  } catch (e) { $("#error").textContent = e.message || "Something went wrong."; $("#error").hidden = false; }
+  $("#go").disabled = false; $("#go").textContent = "Start learning";
+};
+
+function render(d) {
+  $("#topic").textContent = d.topic;
+  // hints: reveal one at a time
+  let n = 0;
+  $("#hints").innerHTML = `<div id="hl"></div><div class="row"><button id="nh">Next hint</button><button class="ghost" id="sol">Show full solution</button></div><div id="sl" hidden></div>`;
+  const next = () => {
+    if (n < d.hints.length) $("#hl").insertAdjacentHTML("beforeend", `<p class="hint"><b>Hint ${n + 1}.</b> ${esc(d.hints[n++])}</p>`);
+    if (n >= d.hints.length) $("#nh").disabled = true;
+  };
+  $("#nh").onclick = next; next();
+  $("#sol").onclick = () => { $("#sl").innerHTML = `<p class="solution">${esc(d.solution).replace(/\n/g, "<br>")}</p>`; $("#sl").hidden = false; };
+  // explain + analogy
+  $("#explain").innerHTML = `<p>${esc(d.explain)}</p><p class="hint"><b>Remember it like this:</b> ${esc(d.analogy)}</p>`;
+  // quiz
+  let score = 0, done = 0;
+  $("#quiz").innerHTML = d.quiz.map((q, i) => `<div class="q"><p><b>${i + 1}. ${esc(q.q)}</b></p>` +
+    q.options.map((o, j) => `<button class="opt" data-q="${i}" data-o="${j}">${esc(o)}</button>`).join("") +
+    `<p class="why" id="why${i}" hidden></p></div>`).join("") + `<p id="score"></p>`;
+  document.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const i = +b.dataset.q, j = +b.dataset.o, q = d.quiz[i];
+    document.querySelectorAll(`[data-q="${i}"]`).forEach(x => { x.disabled = true; if (+x.dataset.o === q.answer) x.classList.add("right"); });
+    if (j === q.answer) score++; else b.classList.add("wrong");
+    $("#why" + i).textContent = q.why; $("#why" + i).hidden = false;
+    if (++done === d.quiz.length) $("#score").innerHTML = `<b>Score: ${score} / ${d.quiz.length}</b>`;
+  });
+  // flashcards
+  $("#cards").innerHTML = `<div class="grid">` + d.flashcards.map(c =>
+    `<button class="card" aria-label="Flip card"><span>${esc(c.front)}</span><span hidden>${esc(c.back)}</span></button>`).join("") + `</div>`;
+  document.querySelectorAll(".card").forEach(c => c.onclick = () => {
+    c.querySelectorAll("span").forEach(s => s.hidden = !s.hidden); c.classList.toggle("flip");
+  });
+  // plan
+  $("#plan").innerHTML = `<ol>${d.plan.map(p => `<li>${esc(p)}</li>`).join("")}</ol>`;
+  $("#result").hidden = false; document.querySelector('.tabs button[data-t="hints"]').click();
+  $("#result").scrollIntoView({ behavior: "smooth" });
+}
+
+$("#share").onclick = async () => {
+  if (!pack) return;
+  const t = `StudyLens: ${pack.topic}\n\n${pack.explain}\n\nTip: ${pack.analogy}\n\n` +
+    pack.flashcards.map(c => `Q: ${c.front}\nA: ${c.back}`).join("\n\n");
+  await navigator.clipboard.writeText(t); $("#share").textContent = "Copied. Paste it in your class group.";
+};
+</script>
+</body>
+</html>
